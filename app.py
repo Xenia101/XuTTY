@@ -31,7 +31,7 @@ def auth():
         channel.send("")
         outdata, errdata = waitStreams(channel)
         output = re.compile(r'\x1b[^m]*m').sub('', outdata)
-        print(output.split('\n'))
+        output = output.split('\n')
 
         return render_template('home.html', output=output)
     else:

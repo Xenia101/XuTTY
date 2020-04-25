@@ -1,69 +1,73 @@
 <!doctype html>
 <html lang="ko">
   <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
     <title>HTML</title>
     <style>
+        body{
+            background: black;
+        }
         .terminal{
-        background: black;
-        color: white;
-        font: courier;
-        padding: 10px;
-        height: 100%;
-        overflow: hidden;
+            background: black;
+            color: white;
+            font: courier;
+            padding: 10px;
+            height: 100%;
         }
 
         .line{
-        display: table;
-        width: 100%;
-        }
-
-        .terminal span{
-        display:table-cell; 
-        width:1px;
+            display: table;
+            width: 100%;
         }
 
         .terminal input{
-        display:table-cell; 
-        width:100%;
-        border: none;
-        background: black;
-        color: white;
-        outline: none;
+            display:table-cell; 
+            width:100%;
+            border: none;
+            background: black;
+            color: white;
+            outline: none;
         }
     </style>
 
     <script>
+        $('.terminal p').load(function(){
+            $('body').scrollTop($('#body').prop('scrollHeight'));
+        }); 
+
         $(function() {
             $('.terminal').on('click', function(){
             $('#input').focus();
+            $('#history').scrollTop($('#history').prop('scrollHeight'));
         });
 
         $('#input').on('keydown',function search(e) {
-                if(e.keyCode == 13) {
+            if(e.keyCode == 13) {
                 // append your output to the history,
-            // here I just append the input
+                // here I just append the input
                 $('#history').append($(this).val()+'<br/>');
             
-            // you can change the path if you want
-            // crappy implementation here, but you get the idea
-            if($(this).val().substring(0, 3) === 'cd '){
+                // you can change the path if you want
+                // crappy implementation here, but you get the idea
+                if($(this).val().substring(0, 3) === 'cd '){
                     $('#path').html($(this).val().substring(3)+'&nbsp;>&nbsp;');
-            }
-            
-            // clear the input
-            $('#input').val('');
-            
+                }
+                
+                // clear the input
+                $('#input').val('');
             }
         });
         });
     </script>
   </head>
   <body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <div class="terminal">
         <div id="history">
-            <p>{{ output }}</p>
+            {% for line in output %}
+                <p>{{ line }}</p>
+            {% endfor %}
         </div>
         <div class="line">
             <input type="text" id="input">
