@@ -3,9 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="XENIA101">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-    <title>HTML</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>XuTTY</title>
 
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css" />
     <style>
@@ -86,33 +88,8 @@
         -o-column-width: 100px;
         column-width: 100px;
         }
-
-
-        /************************************************************/
-        /* SVG Clock                                                */
-        /************************************************************/
-
-        .clock-container {
-        display: none /*inline-block*/;
-        position: relative;
-        width: 200px;
-        vertical-align: middle;
-        overflow: hidden;
-        } 
-
-        .clock-container > svg > circle {
-        stroke-width: 2px;
-        stroke: #fff;
-        }
-
-        .hour, .min, .sec { 
-        stroke-width: 1px;
-        fill: #333;
-        stroke: #555;
-        }
-
-        .sec {
-        stroke: #f55;
+        #container{
+            padding: 10px;
         }
     </style>
 

@@ -9,9 +9,14 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <title>XuTTY</title>
 
     <style>
+        html, body{
+            color: white;
+            background-color: black;
+        }
         .content {
             position: absolute;
             top: 50%;
@@ -22,6 +27,13 @@
   </head>
   <body>
     <div class="container">
+        <div class="text-center mt-5">
+            <h1>XuTTY</h1>
+            <blockquote class="blockquote">
+                <p class="mb-0">XuTTY is a web-based application that allows to execute shell commands on a server directly from a browser (web-based SSH).</p>
+                <footer class="blockquote-footer">Developed by <a href="https://github.com/Xenia101">XENIA</a></footer>
+              </blockquote>
+        </div>
         <div class = "content" >
             <form action="/auth" method="post">
                 <div class="form-row">
@@ -36,7 +48,7 @@
                 </div>
 
                 <div class="text-center mt-5">
-                    <button class="btn btn-primary" type="submit">Connect</button>
+                    <button class="btn btn-light" type="submit">Connect</button>
                 </div>
             </form>
         </div>
