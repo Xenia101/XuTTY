@@ -2,76 +2,161 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <title>HTML</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css" />
     <style>
-        body{
-            background: black;
+       ::selection {
+        background: #FF5E99;
         }
-        .terminal{
-            background: black;
-            color: white;
-            font: courier;
-            padding: 10px;
-            height: 100%;
+        html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        }
+        body {
+        font-size: 11pt;
+        font-family: Inconsolata, monospace;
+        color: white;
+        background-color: black;
+        }
+        #container {
+        padding: .1em 1.5em 1em 1em;
+        }
+        #container output {
+        clear: both;
+        width: 100%;
+        }
+        #container output h3 {
+        margin: 0;
+        }
+        #container output pre {
+        margin: 0;
+        }
+        .input-line {
+        display: -webkit-box;
+        -webkit-box-orient: horizontal;
+        -webkit-box-align: stretch;
+        display: -moz-box;
+        -moz-box-orient: horizontal;
+        -moz-box-align: stretch;
+        display: box;
+        box-orient: horizontal;
+        box-align: stretch;
+        clear: both;
+        }
+        .input-line > div:nth-child(2) {
+        -webkit-box-flex: 1;
+        -moz-box-flex: 1;
+        box-flex: 1;
+        }
+        .prompt {
+        white-space: nowrap;
+        color: #96b38a;
+        margin-right: 7px;
+        display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-orient: vertical;
+        display: -moz-box;
+        -moz-box-pack: center;
+        -moz-box-orient: vertical;
+        display: box;
+        box-pack: center;
+        box-orient: vertical;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        }
+        .cmdline {
+        outline: none;
+        background-color: transparent;
+        margin: 0;
+        width: 100%;
+        font: inherit;
+        border: none;
+        color: inherit;
+        }
+        .ls-files {
+        height: 45px;
+        -webkit-column-width: 100px;
+        -moz-column-width: 100px;
+        -o-column-width: 100px;
+        column-width: 100px;
         }
 
-        .line{
-            display: table;
-            width: 100%;
+
+        /************************************************************/
+        /* SVG Clock                                                */
+        /************************************************************/
+
+        .clock-container {
+        display: none /*inline-block*/;
+        position: relative;
+        width: 200px;
+        vertical-align: middle;
+        overflow: hidden;
+        } 
+
+        .clock-container > svg > circle {
+        stroke-width: 2px;
+        stroke: #fff;
         }
 
-        .terminal input{
-            display:table-cell; 
-            width:100%;
-            border: none;
-            background: black;
-            color: white;
-            outline: none;
+        .hour, .min, .sec { 
+        stroke-width: 1px;
+        fill: #333;
+        stroke: #555;
+        }
+
+        .sec {
+        stroke: #f55;
         }
     </style>
 
     <script>
-        $('.terminal p').load(function(){
-            $('body').scrollTop($('#body').prop('scrollHeight'));
-        }); 
-
         $(function() {
-            $('.terminal').on('click', function(){
-            $('#input').focus();
-            $('#history').scrollTop($('#history').prop('scrollHeight'));
-        });
-
-        $('#input').on('keydown',function search(e) {
-            if(e.keyCode == 13) {
-                // append your output to the history,
-                // here I just append the input
-                $('#history').append($(this).val()+'<br/>');
-            
-                // you can change the path if you want
-                // crappy implementation here, but you get the idea
-                if($(this).val().substring(0, 3) === 'cd '){
-                    $('#path').html($(this).val().substring(3)+'&nbsp;>&nbsp;');
-                }
-                
-                // clear the input
-                $('#input').val('');
-            }
-        });
+            $('.prompt').html('{{promt}}');
         });
     </script>
   </head>
   <body>
-    <div class="terminal">
-        <div id="history">
-            {% for line in output %}
-                <p>{{ line }}</p>
-            {% endfor %}
+    <div id="container">
+      <output>
+        {% for line in output %}
+            {{ line }}</br>
+        {% endfor %}
+      </output>
+      <div id="input-line" class="input-line">
+        <div class="prompt"></div>
+        <div>
+            <input class="cmdline" id="cmdline" autofocus />
         </div>
-        <div class="line">
-            <input type="text" id="input">
-        </div>
+      </div>
     </div>
+
+    <script>
+        $("#cmdline").keydown(function(key) {
+            if (key.keyCode == 13) {
+                var txt = $('#cmdline').val();
+                $.ajax({
+                    type : 'POST',
+                    url : '/cmd',
+                    data : {
+                        cmd:txt
+                    },
+                    dataType : 'JSON'
+                });
+
+                $('output').append('asd' + '</br>');
+                $('#cmdline').val('').focus();
+            }
+        });
+    </script>
+    
+    <!--<script src="http://www.codehelper.io/api/ips/?js"></script>-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   </body>
 </html>
