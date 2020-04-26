@@ -1,7 +1,7 @@
 import paramiko
 import time
 import re
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 app = Flask(__name__)
 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -28,7 +28,7 @@ def auth():
             ssh.connect(request.form['host'], username=request.form['username'], password=request.form['password'], port=22)
             ssh.close()
         except (paramiko.BadHostKeyException, paramiko.AuthenticationException, paramiko.SSHException) as e:
-            print(e)
+            return redirect(url_for('home'))
             sys.exit(-1)
         
         session['host'] = request.form['host']
@@ -42,32 +42,25 @@ def cmd():
     if request.method == 'POST':
         c.send(request.form['cmd'] + "\n")
         outdata, errdata = waitStreams(c)
-        output = re.compile(r'\x1b[^m]*m').sub('', outdata)
-        output = output.split('\n')
+        output = re.compile(r'\x1b[^m]*m').sub('', outdata).split('\n')
 
         print(output)
 
-        return '',204
+        return jsonify({'data':output[1:-1], 'promt':output[-1]})
     else:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(session.get('host'),22, username=session.get('user'), password=session.get('pwd'))
+        try:
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(session.get('host'),22, username=session.get('user'), password=session.get('pwd'))
+        except (paramiko.BadHostKeyException, paramiko.AuthenticationException, paramiko.SSHException) as e:
+            return redirect(url_for('home'))
 
         c = ssh.invoke_shell()
         c.send("")
         outdata, errdata = waitStreams(c)
-        output = re.compile(r'\x1b[^m]*m').sub('', outdata)
-        output = output.split('\n')
+        output = re.compile(r'\x1b[^m]*m').sub('', outdata).split('\n')
 
         return render_template('home.html', output=output[:len(output)-1], promt=output[-1])
 
 if __name__ == '__main__':
     app.run(host="localhost", port=5000, debug=True, use_reloader=False)
-
-
-#while True:
-#    command = input()
-#    channel.send(command+"\n")
-#    outdata, errdata = waitStreams(channel)
-#    print(re.compile(r'\x1b[^m]*m').sub('', outdata))
-

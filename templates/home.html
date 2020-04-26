@@ -132,7 +132,7 @@
       <div id="input-line" class="input-line">
         <div class="prompt"></div>
         <div>
-            <input class="cmdline" id="cmdline" autofocus />
+            <input class="cmdline" id="cmdline" autofocus autocomplete="off"/>
         </div>
       </div>
     </div>
@@ -147,12 +147,21 @@
                     data : {
                         cmd:txt
                     },
-                    dataType : 'JSON'
+                    dataType : 'JSON',
+                    success: function(data){
+                        var s = Object.values(data['data']);
+                        var vPool="";
+                        jQuery.each(s, function(i, val) {
+                            vPool += val + "</br>";
+                        });
+                        $('output').html(vPool);
+                        $('.prompt').html(data['promt']);
+                        $('#cmdline').focus();
+                    }
                 });
-
-                $('output').append('asd' + '</br>');
                 $('#cmdline').val('').focus();
             }
+            $('#cmdline').focus();
         });
     </script>
     
