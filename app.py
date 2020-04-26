@@ -40,17 +40,14 @@ def auth():
 def cmd():
     global c
     if request.method == 'POST':
-        print(c)
-
-        #channel.send(request.form['cmd'])
-        c.send("ls\n")
+        c.send(request.form['cmd'] + "\n")
         outdata, errdata = waitStreams(c)
         output = re.compile(r'\x1b[^m]*m').sub('', outdata)
         output = output.split('\n')
 
         print(output)
 
-        return render_template('home.html')
+        return '',204
     else:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
