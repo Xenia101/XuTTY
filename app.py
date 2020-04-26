@@ -39,28 +39,34 @@ def auth():
 @app.route('/cmd', methods=['POST', 'GET'])
 def cmd():
     global c
-    if request.method == 'POST':
-        c.send(request.form['cmd'] + "\n")
-        outdata, errdata = waitStreams(c)
-        output = re.compile(r'\x1b[^m]*m').sub('', outdata).split('\n')
+    if "host" in session:
+        if request.method == 'POST':
+            if str(request.form['cmd']) == 'bye':
+                session.pop('host')
+                session.pop('user')
+                session.pop('pwd')
+            c.send(request.form['cmd'] + "\n")
+            outdata, errdata = waitStreams(c)
+            output = re.compile(r'\x1b[^m]*m').sub('', outdata).split('\n')
 
-        print(output)
+            return jsonify({'data':output[1:-1], 'promt':output[-1]})
+        else:
+            try:
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(session.get('host'),22, username=session.get('user'), password=session.get('pwd'))
+            except (paramiko.BadHostKeyException, paramiko.AuthenticationException, paramiko.SSHException) as e:
+                return redirect(url_for('home'))
 
-        return jsonify({'data':output[1:-1], 'promt':output[-1]})
+            c = ssh.invoke_shell()
+            c.send("")
+            outdata, errdata = waitStreams(c)
+            output = re.compile(r'\x1b[^m]*m').sub('', outdata).split('\n')
+
+            return render_template('home.html', output=output[:len(output)-1], promt=output[-1])
     else:
-        try:
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(session.get('host'),22, username=session.get('user'), password=session.get('pwd'))
-        except (paramiko.BadHostKeyException, paramiko.AuthenticationException, paramiko.SSHException) as e:
-            return redirect(url_for('home'))
-
-        c = ssh.invoke_shell()
-        c.send("")
-        outdata, errdata = waitStreams(c)
-        output = re.compile(r'\x1b[^m]*m').sub('', outdata).split('\n')
-
-        return render_template('home.html', output=output[:len(output)-1], promt=output[-1])
+        print('session not founded')
+        return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(host="localhost", port=5000, debug=True, use_reloader=False)
