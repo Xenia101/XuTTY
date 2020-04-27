@@ -9,9 +9,9 @@ XuTTY is a web-based application that allows to execute shell commands on a serv
 ## Example
 
 <p align=center>
-  <img width="45%" height="auto" src="https://github.com/Xenia101/XuTTY/blob/master/img/main.PNG?raw=true">
+  <img width="70%" height="auto" src="https://github.com/Xenia101/XuTTY/blob/master/img/main.PNG?raw=true">
 </p>
 
 <p align=center>
-  <img width="45%" height="auto" src=https://github.com/Xenia101/XuTTY/blob/master/img/main2.PNG?raw=true">
+  <img width="70%" height="auto" src=https://github.com/Xenia101/XuTTY/blob/master/img/main2.PNG?raw=true">
 </p>                                                                                                         
