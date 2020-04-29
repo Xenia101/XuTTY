@@ -69,4 +69,4 @@ def cmd():
         return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    app.run(host="localhost", port=5000, debug=True, use_reloader=False)
+    app.run(host="localhost", port=5000)
